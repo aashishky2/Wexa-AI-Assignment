@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelGraph AI | Secure Context Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #000000;
+      --zinc-950:#09090b;
+      --zinc-900:#18181b;
+      --zinc-800:#27272a;
+      --zinc-500:#71717a;
+      --zinc-400:#a1a1aa;
+      --zinc-200:#e4e4e7;
+      --white:   #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background-color: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: var(--zinc-800); color: var(--white); }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 72px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--zinc-900);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.95rem; font-weight: 500; color: var(--white);
+      text-decoration: none; letter-spacing: -0.3px;
+    }
+    .nav-links {
+      display: flex; gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.85rem; color: var(--zinc-400);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .btn-nav {
+      padding: 9px 18px;
+      background: var(--white); color: var(--black);
+      font-size: 0.85rem; font-weight: 500; font-family: inherit;
+      border: none; border-radius: 8px; cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-nav:hover { background: var(--zinc-200); }
+
+    /* ── Layout ──────────────────────────────────────── */
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      padding: 180px 0 100px;
+      min-height: 90vh;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    h1 {
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 400; letter-spacing: -2px; line-height: 1.1;
+      margin-bottom: 28px; color: var(--white);
+    }
+    .hero-desc {
+      font-size: 1.15rem; color: var(--zinc-400);
+      max-width: 580px; margin-bottom: 44px; font-weight: 300; line-height: 1.7;
+    }
+    .hero-btns { display: flex; gap: 14px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 24px;
+      background: var(--white); color: var(--black);
+      font-size: 0.875rem; font-weight: 500; font-family: inherit;
+      border: none; border-radius: 8px; cursor: pointer; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--zinc-200); }
+    .btn-outline {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 12px 24px;
+      background: transparent; color: var(--white);
+      font-size: 0.875rem; font-weight: 500; font-family: inherit;
+      border: 1px solid var(--zinc-800); border-radius: 8px; cursor: pointer; text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-outline:hover { background: var(--zinc-900); border-color: var(--zinc-700); }
+
+    /* ── Terminal ─────────────────────────────────────── */
+    .terminal {
+      margin-top: 72px;
+      padding: 28px 32px;
+      background: var(--zinc-950);
+      border: 1px solid var(--zinc-900);
+      border-radius: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      color: var(--zinc-400);
+      line-height: 1.8;
+    }
+    .terminal .hl { color: var(--white); }
+    .terminal .dim { color: var(--zinc-500); }
+
+    /* ── Sections ─────────────────────────────────────── */
+    section { padding: 120px 0; }
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem; color: var(--zinc-500);
+      text-transform: uppercase; letter-spacing: 0.15em;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.2rem);
+      font-weight: 400; letter-spacing: -1px; margin-bottom: 14px;
+    }
+    .section-desc {
+      font-size: 1rem; color: var(--zinc-400); font-weight: 300;
+      max-width: 560px; line-height: 1.7; margin-bottom: 56px;
+    }
+
+    /* ── Workflow Steps ────────────────────────────────── */
+    .workflow { display: flex; flex-direction: column; gap: 16px; }
+    .flow-step {
+      display: flex; align-items: flex-start; gap: 32px;
+      padding: 28px 32px;
+      background: var(--zinc-950);
+      border: 1px solid var(--zinc-900);
+      border-radius: 16px;
+      transition: border-color 0.2s;
+    }
+    .flow-step:hover { border-color: var(--zinc-800); }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; color: var(--zinc-500);
+      min-width: 28px; padding-top: 4px;
+    }
+    .step-content h3 {
+      font-size: 1.05rem; font-weight: 500; margin-bottom: 8px;
+    }
+    .step-content p {
+      font-size: 0.9rem; color: var(--zinc-400); font-weight: 300; line-height: 1.7;
+    }
+
+    /* ── Features Grid ─────────────────────────────────── */
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0;
+    }
+    .feature-card {
+      padding: 32px 0;
+      border-top: 1px solid var(--zinc-900);
+    }
+    .feature-card h3 {
+      font-size: 1rem; font-weight: 500; margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: 0.875rem; color: var(--zinc-400); font-weight: 300; line-height: 1.7;
+    }
+
+    /* ── Pricing ───────────────────────────────────────── */
+    .pricing-box {
+      padding: 48px;
+      background: var(--zinc-950);
+      border: 1px solid var(--zinc-900);
+      border-radius: 16px;
+      max-width: 420px;
+    }
+    .pricing-box h3 { font-size: 0.875rem; font-weight: 500; color: var(--zinc-400); }
+    .price-num {
+      font-size: 5rem; font-weight: 300; letter-spacing: -3px;
+      line-height: 1; margin: 20px 0 6px;
+    }
+    .price-label { font-size: 0.8rem; color: var(--zinc-500); margin-bottom: 36px; }
+    .pricing-list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
+    .pricing-list li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.875rem; color: var(--zinc-400);
+    }
+    .pricing-list li::before {
+      content: '✓'; color: var(--zinc-500); font-size: 0.75rem; flex-shrink: 0;
+    }
+    .btn-full {
+      display: flex; align-items: center; justify-content: center; width: 100%;
+      padding: 14px;
+      background: var(--white); color: var(--black);
+      font-size: 0.875rem; font-weight: 500; font-family: inherit;
+      border: none; border-radius: 8px; cursor: pointer; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-full:hover { background: var(--zinc-200); }
+
+    /* ── Footer ────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--zinc-900);
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--zinc-500);
+      font-size: 0.8rem;
+    }
+    .footer-logo {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 12px; color: var(--white); font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      SentinelGraph AI
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">Architecture</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <a href="dashboard.html" class="btn-nav">Dashboard</a>
+  </nav>
+
+  <div class="container">
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>The Zero-Trust Agent<br>Operating System.</h1>
+      <p class="hero-desc">Traditional RBAC breaks down in AI workflows. We provide cryptographic ReBAC, real-time graph traversal authorization, and autonomous agent identity governance to ensure zero data leaks.</p>
+      <div class="hero-btns">
+        <a href="dashboard.html" class="btn-primary">Deploy Gateway</a>
+        <a href="#how-it-works" class="btn-outline">How it works</a>
+      </div>
+
+      <div class="terminal">
+        <div>➜ curl -X POST https://api.sentinelgraph.dev/v1/agent/passport/mint \</div>
+        <div style="margin-left:20px;margin-bottom:16px;">-d '{"agent": "sales-bot", "scope": ["read:q3_revenue"]}'</div>
+        <div><span class="hl">[SentinelGraph]</span> Minting ephemeral Zero-Trust passport...</div>
+        <div><span class="hl">[SentinelGraph]</span> Graph ReBAC traversal complete (4ms).</div>
+        <div class="dim">[Security] 2 Data Assets blocked (Missing clearance).</div>
+        <div><span class="hl">[Gateway]</span> Secure Context Packet forwarded to LLM.</div>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <section id="how-it-works">
+      <div class="eyebrow">Architecture</div>
+      <h2 class="section-title">How it works</h2>
+      <p class="section-desc">A deterministic, mathematically proven workflow ensuring your enterprise AI never sees data it shouldn't.</p>
+
+      <div class="workflow">
+        <div class="flow-step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Agent Passport Minting</h3>
+            <p>Before an autonomous AI worker begins a task, it requests an ephemeral Passport from the Agent OS. The passport cryptographically binds the agent's identity to a strict, time-bound scope.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Graph ReBAC Traversal</h3>
+            <p>The backend executes a highly optimized Cypher traversal against your Neo4j Knowledge Graph to mathematically calculate relationship paths between the Agent and all relevant Data Assets.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Zero-Trust Context Pruning</h3>
+            <p>Any data node without a direct, mathematically proven relationship path to the agent's passport is aggressively pruned from the RAG context. The entire access decision is recorded as an immutable Audit Log.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <h3>Secure LLM Execution</h3>
+            <p>The pruned, verified context is forwarded to the LLM (OpenAI, Anthropic). The AI generates an answer strictly grounded in data it is proven to have access to, eliminating data leaks.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+      <div class="eyebrow">Capabilities</div>
+      <h2 class="section-title">Features</h2>
+      <div class="features-grid">
+        <div class="feature-card" style="padding-right:40px;">
+          <h3>Cryptographic ReBAC</h3>
+          <p>Evaluate multi-hop permission paths in milliseconds. If there's no mathematical path, the agent has no access.</p>
+        </div>
+        <div class="feature-card" style="padding-right:40px;">
+          <h3>Zero Data Leaks</h3>
+          <p>Agents understand the structural 'how' and 'why' of your data, eliminating catastrophic leaks common in flat vector stores.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Zanzibar & OpenFGA</h3>
+          <p>Fully compliant with Google Zanzibar paradigms. Prove to compliance exactly what data your AI agents saw with immutable audit logs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer Guidelines -->
+    <section id="guidelines" style="margin-top: 120px;">
+      <div class="eyebrow">Developer Guidelines</div>
+      <h2 class="section-title">How to Secure Your LLM in 3 Steps</h2>
+      <p class="section-desc" style="max-width: 600px;">Stop data leaks in your AI apps instantly. Follow this integration flow to replace flat RBAC with SentinelGraph ReBAC.</p>
+
+      <div class="workflow" style="margin-top: 40px; border-left: none; padding-left: 0; display: flex; flex-direction: column; gap: 40px;">
+        
+        <!-- Step 1 -->
+        <div class="feature-card" style="border-top: none; padding: 0; display: flex; gap: 32px; align-items: flex-start;">
+          <div class="step-num" style="font-size: 1.2rem; border-bottom: 1px solid var(--zinc-800); padding-bottom: 8px;">01</div>
+          <div style="flex: 1;">
+            <h3 style="font-size: 1.1rem; font-weight: 500; margin-bottom: 12px;">Model Identity & Resource Topologies</h3>
+            <p style="font-size: 0.9rem; color: var(--zinc-400); line-height: 1.6; margin-bottom: 16px;">
+              Represent contributors, organizations, projects, agents, and sensitive assets as connected nodes so access can be proven through relationship paths.
+            </p>
+            <div style="background: var(--zinc-950); border: 1px solid var(--zinc-900); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--zinc-200);">
+              (:Contributor)-[:WORKS_AT]-&gt;(:Organization)<br>
+              (:Contributor)-[:CONTRIBUTED_TO]-&gt;(:Project)<br>
+              (:Project)-[:HAS_ACCESS_TO]-&gt;(:DataAsset)<br>
+              (:Agent)-[:PERMITTED_SCOPE]-&gt;(:DataAsset)
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="feature-card" style="border-top: none; padding: 0; display: flex; gap: 32px; align-items: flex-start;">
+          <div class="step-num" style="font-size: 1.2rem; border-bottom: 1px solid var(--zinc-800); padding-bottom: 8px;">02</div>
+          <div style="flex: 1;">
+            <h3 style="font-size: 1.1rem; font-weight: 500; margin-bottom: 12px;">Wrap your RAG Retrieval Logic</h3>
+            <p style="font-size: 0.9rem; color: var(--zinc-400); line-height: 1.6; margin-bottom: 16px;">
+              Before feeding vector search results to the LLM context window, pass the retrieved asset IDs to the SentinelGraph API. It runs a sub-millisecond Cypher shortest-path traversal to verify the user has a mathematical relationship path to the data.
+            </p>
+            <div style="background: var(--zinc-950); border: 1px solid var(--zinc-900); padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--zinc-200);">
+              <span style="color: var(--zinc-500);"># Python Example with LangChain</span><br>
+              retrieved_docs = vector_store.similarity_search(query)<br>
+              <br>
+              <span style="color: var(--zinc-500);"># SentinelGraph instantly prunes unauthorized docs</span><br>
+              secure_docs = sentinelgraph.prune_context(<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;user_id=current_user.id,<br>
+              &nbsp;&nbsp;&nbsp;&nbsp;documents=retrieved_docs<br>
+              )<br><br>
+              llm.generate(prompt, context=secure_docs)
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="feature-card" style="border-top: none; padding: 0; display: flex; gap: 32px; align-items: flex-start;">
+          <div class="step-num" style="font-size: 1.2rem; border-bottom: 1px solid var(--zinc-800); padding-bottom: 8px;">03</div>
+          <div style="flex: 1;">
+            <h3 style="font-size: 1.1rem; font-weight: 500; margin-bottom: 12px;">Monitor Live Supply-Chain Risks in the Dashboard</h3>
+            <p style="font-size: 0.9rem; color: var(--zinc-400); line-height: 1.6;">
+              Once deployed, open your SentinelGraph Dashboard to view real-time SOC2 audit logs. You can visually explore the graph to identify transitive data leaks, such as when two competing organizations share a contributor on a critical dependency layer.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing">
+      <div class="eyebrow">Pricing</div>
+      <h2 class="section-title">Usage-based.</h2>
+      <p class="section-desc">Pay only for secured context. No subscriptions, no hidden fees.</p>
+      <div class="pricing-box">
+        <h3>API Gateway</h3>
+        <div class="price-num">$0.01</div>
+        <p class="price-label">per successful Context Packet</p>
+        <ul class="pricing-list">
+          <li>Unlimited Graph Nodes</li>
+          <li>Sub-10ms ReBAC queries</li>
+          <li>90-day Immutable Audit Logs</li>
+          <li>Native OpenAI / Anthropic integrations</li>
+        </ul>
+        <a href="dashboard.html" class="btn-full">Start Building</a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      SentinelGraph AI
+    </div>
+    <p>&copy; 2026 SentinelGraph AI. Minimalist Enterprise Security.</p>
+  </footer>
+
+</body>
+</html>
